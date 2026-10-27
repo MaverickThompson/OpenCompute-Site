@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpenCompute Lab</title>
+<meta name="description" content="OpenCompute Lab: invite-only GPU sharing for a student AI club. Members run approved AI workloads on the club's own GPU, in sealed containers, with fair limits and measured results.">
+<meta property="og:title" content="OpenCompute Lab">
+<meta property="og:description" content="OpenCompute Lab: invite-only GPU sharing for a student AI club. Members run approved AI workloads on the club's own GPU, in sealed containers, with fair limits and measured results.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#FAF8F2">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/inter-tight-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="backdrop" id="backdrop" aria-hidden="true"><div class="grid" id="bpGrid"></div><div class="fig f1" data-fig="card"></div><div class="fig f2" data-fig="chip"></div><div class="fig f3" data-fig="fan"></div><div class="fig f4" data-fig="board"></div></div>
+
+<div class="nav-shell">
+  <header class="nav glass" id="nav">
+    <nav class="nav-left" aria-label="Sections">
+      <a href="#how" data-nav="how">How it works</a>
+      <a href="#workloads" data-nav="workloads">Workloads</a>
+      <a href="#limits" data-nav="limits">Limits</a>
+    </nav>
+    <a class="logo" href="#top" aria-label="OpenCompute Lab, back to top">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#18283F" stroke-width="1.8" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1" fill="#4267AB" stroke="none"/><path d="M9 2.5v3.5M15 2.5v3.5M9 18v3.5M15 18v3.5M2.5 9h3.5M2.5 15h3.5M18 9h3.5M18 15h3.5"/></svg>
+      <span class="logo-word">OpenCompute Lab</span>
+    </a>
+    <div class="nav-right"><a class="btn primary" href="#join">Ask for an invite</a></div>
+  </header>
+</div>
+
+<main id="top">
+  <!-- HERO -->
+  <section class="track" id="hero" aria-label="Introduction">
+    <div class="stage">
+      <div class="stage-bg" id="stageBg"></div>
+      <div class="hero-title" id="heroTitle">
+        <p class="label hero-eyebrow">Invite-only GPU sharing for a student AI club</p>
+        <h1 class="display echo" data-echo>Shared GPU power.</h1>
+        <p class="sub">For the VIBE club.</p>
+      </div>
+      <div class="sweep l" data-c="0.34"><h2 class="display echo" data-echo>A new angle on compute.</h2></div>
+      <div class="sweep c" data-c="0.58"><h2 class="display echo" data-echo>Unlock the chip.</h2></div>
+      <div class="sweep l" data-c="0.82"><h2 class="display echo" data-echo>A new perspective on training.</h2></div>
+      <div class="gpu-pos" id="heroGpu"><div class="gpu" data-gpu></div></div>
+      <div class="hero-foot">
+        <div class="copy glass" id="heroCopy">
+          <span>Run approved AI workloads on the club's own GPU. Free to members, within fair limits.</span>
+          <a class="btn primary" href="#how">See how it works</a>
+        </div>
+        <div class="dots" id="dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
+        <span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT YOU GET -->
+  <section class="split curtain slab" id="get" aria-labelledby="getTitle">
+    <div class="dark">
+      <h2 class="display echo h-section" id="getTitle" data-echo>What you get</h2>
+      <hr class="divider">
+      <ul class="feat">
+        <li class="glass on-dark lift">
+          <svg viewBox="0 0 26 26" fill="none" stroke="#FAF8F2" stroke-width="1.6" aria-hidden="true"><rect x="5" y="11" width="16" height="11" rx="2.5"/><path d="M8.5 11V8a4.5 4.5 0 0 1 9 0v3"/></svg>
+          <b>Private</b>
+          <p>Your data and results stay on hardware the club controls. Nothing goes to an outside AI service.</p>
+        </li>
+        <li class="glass on-dark lift">
+          <svg viewBox="0 0 26 26" fill="none" stroke="#FAF8F2" stroke-width="1.6" aria-hidden="true"><circle cx="13" cy="13" r="9"/><path d="M13 8v10M10 10.5c0-1.2 1.3-2 3-2s3 .8 3 2-1.3 1.8-3 2.2-3 1-3 2.2 1.3 2 3 2 3-.8 3-2"/></svg>
+          <b>Free within quotas</b>
+          <p>No bill and no credits. 2 jobs at once, 10 a day and 500 MB of storage per member.</p>
+        </li>
+        <li class="glass on-dark lift">
+          <svg viewBox="0 0 26 26" fill="none" stroke="#FAF8F2" stroke-width="1.6" aria-hidden="true"><path d="M4 18a9 9 0 1 1 18 0"/><path d="M13 18l4.5-6"/></svg>
+          <b>Measured</b>
+          <p>Every job records its time and peak memory.</p>
+        </li>
+        <li class="glass on-dark lift">
+          <svg viewBox="0 0 26 26" fill="none" stroke="#FAF8F2" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="5" width="19" height="13" rx="2"/><path d="M9 22h8M13 18v4"/></svg>
+          <b>Nothing to install</b>
+          <p>Pick a ready-made workload in your browser and press Run.</p>
+        </li>
+      </ul>
+      <p class="quiet">No installs. No bills.</p>
+    </div>
+    <div class="pale-half">
+      <div class="mini" data-spin><div class="gpu" data-gpu></div></div>
+      <div class="job-chip glass">
+        <span class="label st">Succeeded</span>
+        <strong>Small image classifier</strong>
+        <span>2 rounds · 23 s · Quadro P400</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW A JOB RUNS -->
+  <section class="how wrap" id="how" aria-labelledby="howTitle">
+    <div class="inner">
+      <div class="head">
+        <p class="label">How it works</p>
+        <h2 class="display echo h-section" id="howTitle" data-echo>How a job runs</h2>
+      </div>
+      <div class="how-grid">
+        <ol class="steps">
+          <li class="glass lift"><div><b>Pick an approved workload</b><p>Choose from the list the admin trusts. Each one runs from a pinned container image.</p></div></li>
+          <li class="glass lift"><div><b>Set it up</b><p>Rounds, batch size, seed, or your own CSV table. Every setting is checked before the job is queued.</p></div></li>
+          <li class="glass lift"><div><b>Watch it train</b><p>The live log refreshes every 5 seconds, with a round counter and a loss chart.</p></div></li>
+          <li class="glass lift"><div><b>Keep the results</b><p>Download <code>metrics.json</code> and the trained <code>model.pt</code> from the job page.</p></div></li>
+        </ol>
+        <div class="tiles">
+          <figure class="tile" data-speed="-0.035">
+            <div class="panel term glass">
+              <div class="dim">job · small image classifier</div>
+              <div>worker desktop-gpu-1 claimed job</div>
+              <div>device cuda:0 · Quadro P400</div>
+              <div>round 1 of 2 · done</div>
+              <div>round 2 of 2 · done</div>
+              <div class="ok">test accuracy 98.38%</div>
+              <div class="ok">Succeeded · 23 s</div>
+            </div>
+            <figcaption class="label">Live log</figcaption>
+          </figure>
+          <figure class="tile" data-speed="0.03">
+            <div class="panel chart glass">
+              <svg viewBox="0 0 200 150" preserveAspectRatio="none" aria-hidden="true">
+                <g stroke="#18283F" stroke-opacity=".1" stroke-width="1"><path d="M14 30H192M14 66H192M14 102H192"/></g>
+                <path d="M14 20 C46 70, 70 98, 102 108 S164 122, 190 125" fill="none" stroke="#18283F" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="190" cy="125" r="4.5" fill="#4267AB"/>
+                <path d="M14 138H192" stroke="#18283F" stroke-opacity=".35" stroke-width="1"/>
+              </svg>
+            </div>
+            <figcaption class="label">Loss per round · illustration</figcaption>
+          </figure>
+          <figure class="tile" data-speed="0.04">
+            <div class="panel reading glass">
+              <span class="label">Quadro P400 · peak memory</span>
+              <span class="big">463 MB</span>
+              <div class="bar"><span></span></div>
+              <span class="label">of 2048 MB</span>
+            </div>
+            <figcaption class="label">GPU use</figcaption>
+          </figure>
+          <figure class="tile" data-speed="-0.02">
+            <div class="panel files glass">
+              <div>metrics.json <span>↓</span></div>
+              <div>model.pt <span>↓</span></div>
+              <div>steps.csv <span>↓</span></div>
+            </div>
+            <figcaption class="label">Results</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY IT'S SAFE -->
+  <section class="safe wrap" id="limits" aria-labelledby="safeTitle">
+    <div class="inner">
+      <div class="head">
+        <p class="label">Limits</p>
+        <h2 class="display echo h-section" id="safeTitle" data-echo>Why it's safe to share</h2>
+      </div>
+      <div class="cols">
+        <div class="glass lift">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#FAF8F2" stroke-width="1.8" aria-hidden="true"><path d="M4 7l8-4 8 4v10l-8 4-8-4z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg></span>
+          <b>Sealed containers</b>
+          <p>Jobs run with no network, read-only files, a non-root user, and memory and time limits.</p>
+        </div>
+        <div class="glass lift">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#FAF8F2" stroke-width="1.8" aria-hidden="true"><path d="M12 4v16M6 8h12M6 8l-3 6h6zM18 8l-3 6h6z"/></svg></span>
+          <b>Fair limits</b>
+          <p>Per-member limits keep the queue moving for everyone.</p>
+        </div>
+        <div class="glass lift">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#FAF8F2" stroke-width="1.8" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+          <b>Honest numbers</b>
+          <p>The site never says a GPU job worked unless the job's own output proves it.</p>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat glass lift"><span class="n">2</span><span class="label">Jobs at once</span></div>
+        <div class="stat glass pale lift"><span class="n">10</span><span class="label">Jobs a day</span></div>
+        <div class="stat glass lift"><span class="n">500 MB</span><span class="label">Storage per member</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- UNLOCK -->
+  <section class="banner dark wrap curtain slab" aria-labelledby="unlockTitle">
+    <div class="crowd" id="crowd" aria-hidden="true"></div>
+    <div class="inner">
+      <div class="strip glass on-dark">
+        <h2 class="display echo h-section" id="unlockTitle" data-echo>Unlock the GPU in your club.</h2>
+        <a class="btn light" href="#join">Ask for an invite</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORKLOADS -->
+  <section class="train wrap" id="workloads" aria-labelledby="trainTitle">
+    <div class="inner">
+      <svg class="chip-icon" viewBox="0 0 24 24" fill="none" stroke="#18283F" stroke-width="1.6" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1" fill="#4267AB" stroke="none"/><path d="M9 2.5v3.5M15 2.5v3.5M9 18v3.5M15 18v3.5M2.5 9h3.5M2.5 15h3.5M18 9h3.5M18 15h3.5"/></svg>
+      <h2 class="display echo h-section" id="trainTitle" data-echo>Let's get training.</h2>
+      <div class="cards">
+        <article class="card glass lift">
+          <div class="pic digits" aria-hidden="true"></div>
+          <div class="body">
+            <div class="tags"><span>GPU</span><span>1 to 5 rounds</span></div>
+            <h3>Small image classifier</h3>
+            <p>Train a handwritten-digit recognizer and watch accuracy rise each round.</p>
+            <p class="measured">98.38% after 2 rounds, 23 s on our Quadro P400.</p>
+          </div>
+        </article>
+        <article class="card glass lift">
+          <div class="pic" aria-hidden="true">
+            <svg viewBox="0 0 120 80" fill="none" stroke="#18283F" stroke-width="1.4"><rect x="8" y="12" width="38" height="56" rx="4"/><rect x="74" y="12" width="38" height="56" rx="4"/><path d="M15 22h24M15 32h24M15 42h24M15 52h24M15 62h12M81 22h24M81 32h24M81 42h24M81 52h24M81 62h12" stroke-opacity=".35"/><path d="M52 40h15M62 35l5 5-5 5" stroke="#4267AB" stroke-width="2"/></svg>
+          </div>
+          <div class="body">
+            <div class="tags"><span>GPU</span></div>
+            <h3>PyTorch GPU check</h3>
+            <p>Proves the GPU is really doing the work.</p>
+            <p class="measured">1024 × 1024 matrix multiply: 4.2 ms on the GPU, 21.1 ms on one CPU core (5.1×).</p>
+          </div>
+        </article>
+        <article class="card glass lift">
+          <div class="pic" aria-hidden="true">
+            <svg viewBox="0 0 120 80" fill="none" stroke="#18283F" stroke-width="1.4"><rect x="10" y="10" width="100" height="60" rx="4"/><path d="M10 25h100M10 40h100M10 55h100M42 10v60M76 10v60" stroke-opacity=".35"/><rect x="77" y="11" width="32" height="58" fill="#4267AB" fill-opacity=".14" stroke="#4267AB"/></svg>
+          </div>
+          <div class="body">
+            <div class="tags"><span>CPU</span><span>Your CSV</span></div>
+            <h3>Train on your own table</h3>
+            <p>Upload a CSV and train a small model to predict one column.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOIN -->
+  <section class="join" id="join" aria-labelledby="joinTitle">
+    <div class="join-l">
+      <div class="box glass">
+        <p class="label">The pilot</p>
+        <h2 class="display echo h-section" id="joinTitle" data-echo>Join the pilot</h2>
+        <p class="lede">The first 3 to 5 VIBE members try it in person. Want in? Message the admin on the VIBE Discord.</p>
+      </div>
+    </div>
+    <div class="join-r"><div class="mini" data-spin><div class="gpu" data-gpu></div></div></div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="foot dark wrap curtain">
+    <div class="inner">
+      <nav class="foot-links" aria-label="Footer">
+        <a href="#how">How it works</a>
+        <a href="#workloads">Workloads</a>
+        <a href="#limits">Limits</a>
+        <a href="#join">Join the pilot</a>
+      </nav>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h3 class="label">Contact</h3>
+          <p>Built by Maverick Thompson</p>
+          <ul class="foot-social">
+            <li><a href="https://www.linkedin.com/in/maverick-thompson-116310421" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.11 1.43-2.11 2.9V21H9z"/></svg>LinkedIn</a></li>
+            <li><a href="https://github.com/MaverickThompson" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a></li>
+          </ul>
+        </div>
+        <div class="foot-col">
+          <h3 class="label">Project</h3>
+          <p>A student project: a shared GPU platform with logins, per-member limits, sealed job containers and measured results. Built in 2026.</p>
+        </div>
+        <div class="foot-col">
+          <h3 class="label">Status</h3>
+          <p>Pilot with 3 to 5 VIBE members, in person. Today: one NVIDIA Quadro P400 (2 GB), jobs up to 10 minutes. Next: running a small open AI model, and more GPUs with club funding.</p>
+        </div>
+        <div class="foot-col">
+          <h3 class="label">Privacy</h3>
+          <p>This page has no tracking, no cookies and no forms. The platform itself runs on club hardware and is invite-only.</p>
+        </div>
+      </div>
+      <p class="wordmark"><span>OpenCompute Lab</span></p>
+      <p class="fine">Built by a VIBE club member. Not a university service. Last updated October 2026.</p>
+    </div>
+  </footer>
+</main>
+
+<script src="main.js"></script>
+</body>
+</html>
