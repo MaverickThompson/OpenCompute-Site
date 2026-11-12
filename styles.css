@@ -148,7 +148,7 @@ main { position: relative; z-index: 1; }
   .nav-left { display: none; }
 }
 @media (max-width: 480px) { .nav-invite { display: none; } }
-.join-signin { margin-top: 22px; }
+.join-signin { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 10px; }
 
 /* ---------- Hero: pinned 3D scroll ---------- */
 .track { position: relative; height: 350vh; }
@@ -323,6 +323,7 @@ figure { margin: 0; }
 .foot-col { display: grid; gap: 10px; align-content: start; }
 .foot-col h3 { margin: 0; font-weight: 500; color: rgb(var(--ivory-rgb) / .6); }
 .foot-col p { font-size: 15px; line-height: 1.55; color: rgb(var(--ivory-rgb) / .85); }
+.foot-col p a { color: var(--ivory); text-underline-offset: 3px; overflow-wrap: anywhere; }
 .foot-social { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .foot-social a { display: inline-flex; align-items: center; gap: 9px; color: var(--ivory); text-decoration: none; font-size: 15px; font-weight: 500; }
 .foot-social a:hover { text-decoration: underline; text-underline-offset: 4px; }
