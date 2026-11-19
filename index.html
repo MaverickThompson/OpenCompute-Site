@@ -20,6 +20,7 @@
 <div class="nav-shell">
   <header class="nav glass" id="nav">
     <nav class="nav-left" aria-label="Sections">
+      <a href="#campus" data-nav="campus">Campus map</a>
       <a href="#how" data-nav="how">How it works</a>
       <a href="#workloads" data-nav="workloads">Workloads</a>
       <a href="#limits" data-nav="limits">Limits</a>
@@ -92,6 +93,36 @@
         <span class="label st">Succeeded</span>
         <strong>Small image classifier</strong>
         <span>2 rounds · 23 s · club GPU</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAMPUS MAP -->
+  <section class="campus wrap" id="campus" aria-labelledby="campusTitle">
+    <div class="inner">
+      <div class="head">
+        <p class="label">Campus GPUs</p>
+        <h2 class="display echo h-section" id="campusTitle" data-echo>Every GPU on campus, on one map</h2>
+        <p class="campus-lede">Each GPU that joins the lab floats over the building it lives in. Members see which ones are free, then run an approved workload. Drag the campus to look around.</p>
+      </div>
+      <div class="campus-stage" data-campus-stage>
+        <img class="campus-still" src="campus-map.webp" width="1200" height="760" alt="A 3D model of the St. Paul campus with six example GPU cards hovering over campus buildings" loading="lazy">
+        <div class="campus-scene" data-campus-scene></div>
+        <div class="campus-tags" data-campus-tags></div>
+        <div class="campus-side campus-glass">
+          <ul class="campus-legend" aria-label="What the colors mean">
+            <li><i class="campus-dot" style="background:#2F8A5B"></i>Free</li>
+            <li><i class="campus-dot" style="background:#C3820F"></i>Busy</li>
+            <li><i class="campus-dot" style="background:#4267AB"></i>Paused</li>
+            <li><i class="campus-dot" style="background:#8A94A3"></i>Offline</li>
+          </ul>
+          <ul class="campus-list" data-campus-list aria-label="Example GPUs"></ul>
+          <p class="campus-where"><span class="campus-example">Example GPUs</span> Not real lab data.</p>
+        </div>
+        <aside class="campus-panel campus-glass" data-campus-panel hidden aria-live="polite"></aside>
+        <button class="btn primary campus-start" type="button" data-campus-start>Drag to explore</button>
+        <p class="campus-toast" data-campus-toast hidden role="status"></p>
+        <p class="campus-credit">Map data © OpenStreetMap contributors, Overture Maps Foundation</p>
       </div>
     </div>
   </section>
