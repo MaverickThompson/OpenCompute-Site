@@ -339,3 +339,83 @@ figure { margin: 0; }
   .lift, .btn { transition: none; }
   .lift:hover, .btn:hover { transform: none; }
 }
+
+/* ---------- Campus map: "Every GPU on campus, on one map" ----------
+   A 3D campus on a light slab with ivory glass over it. It loads only when the section scrolls
+   into view on a wide screen; phones see a still picture and load it with "Drag to explore". */
+.campus .inner { padding-block: var(--section-pad); }
+.campus-lede { margin: 0; font-size: 18px; line-height: 1.55; color: rgb(var(--midnight-rgb) / .72); max-width: 640px; }
+.campus-stage {
+  position: relative; margin-top: 48px; height: clamp(440px, 72vh, 760px); overflow: hidden;
+  border-radius: 32px; background: #E9EEF4; border: 1px solid rgb(var(--white-rgb) / .8);
+  box-shadow: 0 24px 60px rgb(var(--midnight-rgb) / .16);
+}
+.campus [hidden] { display: none !important; }
+.campus-still { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.campus-stage.live .campus-still, .campus-stage.live .campus-start { display: none; }
+.campus-scene { position: absolute; inset: 0; touch-action: none; }
+.campus-scene canvas { display: block; outline: none; cursor: grab; }
+.campus-tags { position: absolute; inset: 0; pointer-events: none; }
+.campus-tag {
+  position: absolute; transform: translate(-50%, -100%); pointer-events: auto; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  font: 600 11px var(--body); color: var(--midnight); padding: 4px 8px 4px 7px; border-radius: 999px;
+  background: rgb(var(--ivory-rgb) / .85); border: 1px solid rgb(var(--white-rgb) / .9); box-shadow: 0 4px 14px rgb(var(--midnight-rgb) / .14);
+}
+.campus-tag[aria-pressed="true"] { background: var(--pale); }
+/* Status pictures: a fan that spins only while busy, a moon for Paused, a power sign for Offline. */
+.status-icon { display: inline-block; flex: none; width: 13px; height: 13px; line-height: 0; }
+.status-icon--busy svg { animation: campus-fan-spin 0.9s linear infinite; }
+.status-icon--offline { opacity: 0.55; }
+@keyframes campus-fan-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .status-icon--busy svg { animation: none; } }
+.campus-tag[data-status="offline"], .campus-list button[data-status="offline"] { opacity: 0.55; }
+.campus-tip {
+  position: absolute; z-index: 3; pointer-events: none; transform: translate(-50%, calc(-100% - 12px)); white-space: nowrap;
+  padding: 6px 10px; border-radius: 10px; font-size: 12px; font-weight: 600; background: var(--midnight); color: var(--ivory);
+}
+.campus-glass {
+  position: absolute; z-index: 2; border-radius: 18px;
+  background: rgb(var(--ivory-rgb) / .7); -webkit-backdrop-filter: blur(18px) saturate(180%); backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid rgb(var(--white-rgb) / .75);
+  box-shadow: inset 0 1px 0 rgb(var(--white-rgb) / .9), 0 0 0 .5px rgb(var(--midnight-rgb) / .1), 0 12px 32px rgb(var(--midnight-rgb) / .12);
+}
+.campus-side { top: 16px; left: 16px; width: min(290px, calc(100% - 32px)); padding: 14px 16px; display: grid; gap: 10px; }
+.campus-legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 12px; }
+.campus-legend li { display: inline-flex; align-items: center; gap: 6px; }
+.campus-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.campus-list:empty { display: none; }
+.campus-list button {
+  display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; cursor: pointer;
+  font: 500 13px var(--body); color: var(--midnight); padding: 7px 10px; border-radius: 10px;
+  background: rgb(var(--white-rgb) / .45); border: 1px solid rgb(var(--midnight-rgb) / .08);
+}
+.campus-list button:hover, .campus-list button[aria-pressed="true"] { background: var(--pale); border-color: rgb(var(--blue-rgb) / .35); }
+.campus-list small { margin-left: auto; font-size: 11px; color: rgb(var(--midnight-rgb) / .62); }
+.campus-where { margin: 0; font-size: 12px; color: rgb(var(--midnight-rgb) / .68); }
+.campus-example {
+  display: inline-block; font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  background: var(--pale); color: var(--blue); border-radius: 6px; padding: 3px 6px; margin-right: 4px;
+}
+.campus-panel { top: 16px; right: 16px; width: min(320px, calc(100% - 32px)); padding: 16px; display: grid; gap: 12px; }
+.campus-panel-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.campus-panel h3 { margin: 0; font-family: var(--display); font-size: 20px; letter-spacing: -.02em; }
+.campus-close { font: 600 13px var(--body); color: var(--midnight); background: transparent; border: 1px solid rgb(var(--midnight-rgb) / .25); border-radius: 999px; padding: 6px 12px; cursor: pointer; }
+.campus-state { margin: 0; display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; }
+.campus-facts { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0; font-size: 13px; }
+.campus-facts dt { color: rgb(var(--midnight-rgb) / .62); }
+.campus-facts dd { margin: 0; font-variant-numeric: tabular-nums; }
+.campus-start { position: absolute; z-index: 3; left: 50%; bottom: 24px; transform: translateX(-50%); }
+.campus-start:hover { transform: translateX(-50%) translateY(-1px); }
+.campus-toast { position: absolute; z-index: 4; left: 50%; bottom: 56px; transform: translateX(-50%); margin: 0; padding: 10px 16px; border-radius: 12px; font-size: 13px; background: var(--midnight); color: var(--ivory); max-width: calc(100% - 32px); }
+.campus-credit { position: absolute; z-index: 2; right: 16px; bottom: 16px; margin: 0; font-size: 10px; padding: 3px 8px; border-radius: 6px; background: rgb(var(--ivory-rgb) / .75); color: rgb(var(--midnight-rgb) / .75); }
+@media (max-width: 760px) {
+  .campus-stage { height: 520px; border-radius: 24px; }
+  .campus-side { top: 36px; right: 16px; width: auto; }
+  .campus-list { display: flex; overflow-x: auto; }
+  .campus-list button { width: auto; flex: none; white-space: nowrap; }
+  .campus-list small { display: none; }
+  .campus-panel { top: auto; bottom: 16px; left: 16px; right: 16px; width: auto; }
+  .campus-credit { bottom: auto; top: 8px; right: 12px; left: 12px; text-align: center; }
+  .campus-stage:not(.live) .campus-side { display: none; }
+}

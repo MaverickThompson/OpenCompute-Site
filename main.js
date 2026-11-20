@@ -228,5 +228,27 @@
     spinEls.forEach(el => { el.style.transform = 'rotateX(-10deg) rotateY(-26deg)'; });
     crowdEls.forEach(el => { const [bx, by, bz, sc] = el.dataset.base.split(',').map(Number); el.style.transform = `scale(${sc}) rotateX(${bx}deg) rotateY(${by}deg) rotateZ(${bz}deg)`; });
   }
+  // Campus map (the "Every GPU on campus" section): three.js and the map data load only when
+  // the section is near the screen, and on phones only after "Drag to explore" is pressed.
+  // If 3D can't start (no WebGL, or the page was opened as a file), the still picture stays.
+  const campus = document.getElementById('campus');
+  if (campus) {
+    const startBtn = campus.querySelector('[data-campus-start]');
+    let started = false;
+    const has3d = () => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; } };
+    const start = () => {
+      if (started || !has3d()) return;
+      started = true;
+      import('./campus-map.js').then(m => m.startShowcase(campus)).catch(() => { started = false; });
+    };
+    startBtn.addEventListener('click', start);
+    const wide = matchMedia('(min-width: 761px)');
+    if (!has3d()) startBtn.hidden = true;
+    else if ('IntersectionObserver' in window) {
+      const near = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting) && wide.matches) { start(); near.disconnect(); } }, { rootMargin: '300px' });
+      near.observe(campus);
+    }
+  }
+
   requestAnimationFrame(frame);
 })();
