@@ -254,6 +254,25 @@ function createCampusScene(host, tagsHost, data, handlers) {
   controls.minDistance = 120;
   controls.maxDistance = 2400;
   controls.screenSpacePanning = false;
+  // A plain scroll scrolls the page; Ctrl (or the Mac key) and scroll, or a trackpad pinch,
+  // zooms the map. A plain scroll over the map shows a short hint.
+  controls.enableZoom = false;
+  const zoomKey = /Mac|iPhone|iPad/.test(navigator.platform) ? "\u2318" : "Ctrl";
+  const zoomHint = document.createElement("p");
+  zoomHint.className = "campus-zoom-hint";
+  zoomHint.textContent = `Hold ${zoomKey} and scroll to zoom the map`;
+  zoomHint.hidden = true;
+  tagsHost.appendChild(zoomHint);
+  let zoomHintTimer = 0;
+  function onWheel(event) {
+    const zoom = event.ctrlKey || event.metaKey;
+    controls.enableZoom = zoom;
+    if (zoom) return;
+    zoomHint.hidden = false;
+    clearTimeout(zoomHintTimer);
+    zoomHintTimer = setTimeout(() => { zoomHint.hidden = true; }, 1400);
+  }
+  renderer.domElement.addEventListener("wheel", onWheel, { capture: true, passive: true });
   scene.add(new THREE.HemisphereLight(16777215, 13227750, 1.25));
   const sun = new THREE.DirectionalLight(16774888, 2.1);
   sun.position.set(-500, 900, 420);
@@ -643,6 +662,9 @@ function createCampusScene(host, tagsHost, data, handlers) {
     select,
     dispose() {
       cancelAnimationFrame(frameId);
+      clearTimeout(zoomHintTimer);
+      renderer.domElement.removeEventListener("wheel", onWheel, { capture: true });
+      zoomHint.remove();
       resize.disconnect();
       renderer.domElement.removeEventListener("pointermove", onPointerMove);
       renderer.domElement.removeEventListener("pointerdown", onPointerDown);
