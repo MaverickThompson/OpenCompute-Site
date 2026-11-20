@@ -6,12 +6,36 @@
 // The scene below is the OpenCompute Lab's own GPUs page code (frontend/src/map/campusScene.ts),
 // converted to plain JavaScript. The GPUs here are examples, never real lab data.
 
+// No color coding: only a busy card's fans spin, a free card's are still, a paused card has a
+// moon, an offline card is faded and parked low (the lab's frontend/src/map/gpuMarkers.ts).
 const STATUS_INFO = {
-  free: { label: "Free", color: "#2F8A5B", fanSpeed: 1 },
-  busy: { label: "Busy", color: "#C3820F", fanSpeed: 3.2 },
-  paused: { label: "Paused", color: "#4267AB", fanSpeed: 0.25 },
-  offline: { label: "Offline", color: "#8A94A3", fanSpeed: 0 },
+  free: { label: "Free", legend: "fans still", look: "fan", fanSpeed: 0 },
+  busy: { label: "Busy", legend: "fans spinning", look: "fan", fanSpeed: 3.4 },
+  paused: { label: "Paused", legend: "off hours, moon", look: "moon", fanSpeed: 0 },
+  offline: { label: "Offline", legend: "faded and powered down", look: "power", fanSpeed: 0 },
 };
+const rotate = (turn) => `transform="rotate(${turn} 12 12)"`;
+const FAN_BLADE = "M12 12C11.2 8.6 12.4 5.2 15.6 3.6C17 6.8 15.6 10.4 12 12Z";
+const ICON_PATHS = {
+  fan:
+    '<circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.6"/>' +
+    [0, 120, 240].map((turn) => `<path d="${FAN_BLADE}" fill="currentColor" ${rotate(turn)}/>`).join("") +
+    '<circle cx="12" cy="12" r="1.8" fill="currentColor"/>',
+  moon: '<path d="M19.5 14.6A8 8 0 1 1 9.4 4.5a6.4 6.4 0 0 0 10.1 10.1Z" fill="currentColor"/>',
+  power:
+    '<g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">' +
+    '<path d="M12 3.5v8"/><path d="M6.6 7a7.6 7.6 0 1 0 10.8 0"/></g>',
+};
+function statusIconSvg(status) {
+  const paths = ICON_PATHS[STATUS_INFO[status].look];
+  return `<svg viewBox="0 0 24 24" width="100%" height="100%" aria-hidden="true">${paths}</svg>`;
+}
+function statusIcon(status) {
+  const i = document.createElement("i");
+  i.className = `status-icon status-icon--${status}`;
+  i.innerHTML = statusIconSvg(status);
+  return i;
+}
 
 import * as THREE from "./vendor/three-0.160.0.min.js";
 import { OrbitControls, mergeGeometries } from "./vendor/three-0.160.0.min.js";
@@ -21,6 +45,7 @@ const SLAB_Y = 620;
 const CARD = { w: 46, h: 17.3, d: 5.4 };
 const CARD_SCALE = 1.45;
 const HOVER_HEIGHT = 42;
+const BADGE_SIZE = 11;
 const SIDE_BY_SIDE = 80;
 const DISPLAY_FONT = '"Inter Tight", "Inter", Arial, sans-serif';
 function shapeFromRings(rings) {
@@ -74,6 +99,30 @@ function canvasTexture(width, height, draw) {
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.anisotropy = 4;
   return texture;
+}
+function badgeTexture(status) {
+  return canvasTexture(128, 128, (g, w) => {
+    g.fillStyle = "rgba(250,248,242,.94)";
+    g.beginPath();
+    g.arc(w / 2, w / 2, w / 2 - 4, 0, Math.PI * 2);
+    g.fill();
+    g.strokeStyle = "rgba(24,40,63,.25)";
+    g.lineWidth = 3;
+    g.stroke();
+    g.save();
+    g.translate(w * 0.2, w * 0.2);
+    g.scale(w * 0.6 / 24, w * 0.6 / 24);
+    g.fillStyle = "#18283F";
+    g.strokeStyle = "#18283F";
+    g.lineWidth = 2;
+    g.lineCap = "round";
+    for (const [, d] of statusIconSvg(status).matchAll(/<path d="([^"]+)"/g)) {
+      const path = new Path2D(d);
+      if (status === "offline") g.stroke(path);
+      else g.fill(path);
+    }
+    g.restore();
+  });
 }
 function cardMaterials() {
   const front = canvasTexture(1024, 384, (g, w, h) => {
@@ -156,10 +205,18 @@ function cardMaterials() {
     g.arc(0, 0, 8, 0, Math.PI * 2);
     g.fill();
   });
+  const body = [right, left, top, bottom, front, back].map(
+    (map) => new THREE.MeshStandardMaterial({ map, roughness: 0.45, metalness: 0.15 })
+  );
   return {
-    body: [right, left, top, bottom, front, back].map(
-      (map) => new THREE.MeshStandardMaterial({ map, roughness: 0.45, metalness: 0.15 })
-    ),
+    body,
+    ghost: body.map((material) => {
+      const faded = material.clone();
+      faded.transparent = true;
+      faded.opacity = 0.32;
+      faded.depthWrite = false;
+      return faded;
+    }),
     fanBase: new THREE.MeshStandardMaterial({ map: fanBase, transparent: true, roughness: 0.5 }),
     blades: new THREE.MeshStandardMaterial({
       map: blades,
@@ -334,23 +391,38 @@ function createCampusScene(host, tagsHost, data, handlers) {
   materials.body.forEach((m) => keep(m));
   keep(materials.fanBase);
   keep(materials.blades);
+  materials.ghost.forEach((m) => keep(m));
+  const ghostFanBase = keep(materials.fanBase.clone());
+  const ghostBlades = keep(materials.blades.clone());
+  for (const faded of [ghostFanBase, ghostBlades]) {
+    faded.opacity = 0.32;
+    faded.depthWrite = false;
+  }
+  const badgeMaterial = (status) => keep(new THREE.SpriteMaterial({ map: keep(badgeTexture(status)), depthTest: false }));
+  const badgeMaterials = { paused: badgeMaterial("paused"), offline: badgeMaterial("offline") };
+  const ringMaterial = keep(
+    new THREE.MeshBasicMaterial({ color: MIDNIGHT, transparent: true, opacity: 0.35, side: THREE.DoubleSide })
+  );
+  const lineMaterial = keep(
+    new THREE.LineDashedMaterial({ color: MIDNIGHT, dashSize: 2, gapSize: 2, transparent: true, opacity: 0.5 })
+  );
   const bodyGeometry = keep(new THREE.BoxGeometry(CARD.w, CARD.h, CARD.d));
   const fanGeometry = keep(new THREE.CircleGeometry(CARD.h * 0.41, 40));
   const bladeGeometry = keep(new THREE.PlaneGeometry(CARD.h * 0.8, CARD.h * 0.8));
   const ringGeometry = keep(new THREE.RingGeometry(10, 13, 48));
   const objects = /* @__PURE__ */ new Map();
   let selected = null;
-  function makeCard() {
+  function makeCard(faded) {
     const card = new THREE.Group();
-    const body = new THREE.Mesh(bodyGeometry, materials.body);
-    body.castShadow = true;
+    const body = new THREE.Mesh(bodyGeometry, faded ? materials.ghost : materials.body);
+    body.castShadow = !faded;
     card.add(body);
     const fans = [];
     for (const x of [-CARD.w * 0.25, CARD.w * 0.25]) {
-      const base = new THREE.Mesh(fanGeometry, materials.fanBase);
+      const base = new THREE.Mesh(fanGeometry, faded ? ghostFanBase : materials.fanBase);
       base.position.set(x, 0, CARD.d / 2 + 0.05);
       card.add(base);
-      const blades = new THREE.Mesh(bladeGeometry, materials.blades);
+      const blades = new THREE.Mesh(bladeGeometry, faded ? ghostBlades : materials.blades);
       blades.position.set(x, 0, CARD.d / 2 + 0.12);
       card.add(blades);
       fans.push(blades);
@@ -359,10 +431,9 @@ function createCampusScene(host, tagsHost, data, handlers) {
     return { card, fans };
   }
   function removeObject(object) {
-    scene.remove(object.holder, object.ring, object.line);
-    object.ring.material.dispose();
+    scene.remove(object.holder, object.line);
+    if (object.ring) scene.remove(object.ring);
     object.line.geometry.dispose();
-    object.line.material.dispose();
     object.tag.remove();
   }
   function addObject(marker, slot, slots, phase) {
@@ -373,38 +444,44 @@ function createCampusScene(host, tagsHost, data, handlers) {
     const roof = box.max.y;
     const x = (box.min.x + box.max.x) / 2 + (slot - (slots - 1) / 2) * SIDE_BY_SIDE;
     const z = (box.min.z + box.max.z) / 2;
-    const color = new THREE.Color(STATUS_INFO[marker.status].color);
+    const offline = marker.status === "offline";
+    const hover = offline ? HOVER_HEIGHT * 0.55 : HOVER_HEIGHT;
     const holder = new THREE.Group();
-    holder.position.set(x, roof + HOVER_HEIGHT, z);
-    const { card, fans } = makeCard();
+    holder.position.set(x, roof + hover, z);
+    const { card, fans } = makeCard(offline);
     holder.add(card);
+    if (marker.status === "paused" || offline) {
+      const badge = new THREE.Sprite(badgeMaterials[marker.status]);
+      badge.scale.setScalar(BADGE_SIZE);
+      badge.position.set(CARD.w / 2, CARD.h / 2 + 1, CARD.d);
+      badge.renderOrder = 2;
+      card.add(badge);
+    }
     holder.traverse((part) => {
       part.userData.marker = marker.id;
     });
     scene.add(holder);
-    const ring = new THREE.Mesh(
-      ringGeometry,
-      new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.85, side: THREE.DoubleSide })
-    );
-    ring.rotation.x = -Math.PI / 2;
-    ring.position.set(x, roof + 0.6, z);
-    scene.add(ring);
+    let ring = null;
+    if (!offline) {
+      ring = new THREE.Mesh(ringGeometry, ringMaterial);
+      ring.rotation.x = -Math.PI / 2;
+      ring.position.set(x, roof + 0.6, z);
+      scene.add(ring);
+    }
     const line = new THREE.Line(
       new THREE.BufferGeometry().setFromPoints([
         new THREE.Vector3(x, roof + 0.6, z),
-        new THREE.Vector3(x, roof + 30, z)
+        new THREE.Vector3(x, roof + hover - 12, z)
       ]),
-      new THREE.LineDashedMaterial({ color, dashSize: 2, gapSize: 2 })
+      lineMaterial
     );
     line.computeLineDistances();
     scene.add(line);
     const tag = document.createElement("button");
     tag.type = "button";
     tag.className = "campus-tag";
-    const dot = document.createElement("i");
-    dot.className = "campus-dot";
-    dot.style.background = STATUS_INFO[marker.status].color;
-    tag.append(dot, document.createTextNode(marker.title));
+    tag.dataset.status = marker.status;
+    tag.append(statusIcon(marker.status), document.createTextNode(marker.title));
     tag.setAttribute("aria-label", `${marker.title}, ${STATUS_INFO[marker.status].label}`);
     tag.addEventListener("click", () => handlers.onSelect(marker.id));
     tagsHost.appendChild(tag);
@@ -538,12 +615,12 @@ function createCampusScene(host, tagsHost, data, handlers) {
     const height = host.clientHeight;
     objects.forEach((o) => {
       const status = STATUS_INFO[o.marker.status];
-      if (!reduceMotion) {
-        o.card.position.y = Math.sin(t * 1.2 + o.phase) * 2.2;
-        o.card.rotation.y = Math.sin(t * 0.35 + o.phase) * 0.55;
-        o.card.rotation.z = Math.sin(t * 0.5 + o.phase) * 0.05;
+      if (!reduceMotion && o.marker.status !== "offline") {
+        const pace = o.marker.status === "paused" ? 0.45 : 1;
+        o.card.position.y = Math.sin(t * 1.2 * pace + o.phase) * 2.2;
+        o.card.rotation.y = Math.sin(t * 0.35 * pace + o.phase) * 0.55;
+        o.card.rotation.z = Math.sin(t * 0.5 * pace + o.phase) * 0.05;
         o.fans.forEach((fan) => fan.rotation.z -= dt * 6 * status.fanSpeed);
-        o.ring.scale.setScalar(1 + (Math.sin(t * 2 + o.phase) + 1) * 0.08);
       }
       const size = o.marker.id === selected ? 1.2 : 1;
       o.holder.scale.lerp(scratch.set(size, size, size), 0.15);
@@ -596,12 +673,6 @@ export const EXAMPLE_GPUS = [
   { id: "g6", title: "Student club GPU", building: "Anderson Student Center", status: "busy", gpuName: "RTX 3070", memory: "8 GB", jobsRun: 152, currentWorkload: "GPU vs CPU speed test" },
 ];
 
-function dot(status) {
-  const i = document.createElement("i");
-  i.className = "campus-dot";
-  i.style.background = STATUS_INFO[status].color;
-  return i;
-}
 
 export async function startShowcase(section) {
   const stage = section.querySelector("[data-campus-stage]");
@@ -638,7 +709,7 @@ export async function startShowcase(section) {
     top.append(name, close);
     const state = document.createElement("p");
     state.className = "campus-state";
-    state.append(dot(gpu.status), gpu.currentWorkload ? `${status}, running ${gpu.currentWorkload}` : status);
+    state.append(statusIcon(gpu.status), gpu.currentWorkload ? `${status}, running ${gpu.currentWorkload}` : status);
     const facts = document.createElement("dl");
     facts.className = "campus-facts";
     for (const [k, v] of [["GPU", gpu.gpuName], ["Memory", gpu.memory], ["Jobs run", String(gpu.jobsRun)]]) {
@@ -671,7 +742,8 @@ export async function startShowcase(section) {
     b.setAttribute("aria-pressed", "false");
     const small = document.createElement("small");
     small.textContent = gpu.memory;
-    b.append(dot(gpu.status), gpu.title, small);
+    b.dataset.status = gpu.status;
+    b.append(statusIcon(gpu.status), gpu.title, small);
     b.addEventListener("click", () => select(gpu.id, true));
     li.append(b);
     list.append(li);

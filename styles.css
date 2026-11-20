@@ -363,7 +363,13 @@ figure { margin: 0; }
   background: rgb(var(--ivory-rgb) / .85); border: 1px solid rgb(var(--white-rgb) / .9); box-shadow: 0 4px 14px rgb(var(--midnight-rgb) / .14);
 }
 .campus-tag[aria-pressed="true"] { background: var(--pale); }
-.campus-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; flex: none; }
+/* Status pictures: a fan that spins only while busy, a moon for Paused, a power sign for Offline. */
+.status-icon { display: inline-block; flex: none; width: 13px; height: 13px; line-height: 0; }
+.status-icon--busy svg { animation: campus-fan-spin 0.9s linear infinite; }
+.status-icon--offline { opacity: 0.55; }
+@keyframes campus-fan-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .status-icon--busy svg { animation: none; } }
+.campus-tag[data-status="offline"], .campus-list button[data-status="offline"] { opacity: 0.55; }
 .campus-tip {
   position: absolute; z-index: 3; pointer-events: none; transform: translate(-50%, calc(-100% - 12px)); white-space: nowrap;
   padding: 6px 10px; border-radius: 10px; font-size: 12px; font-weight: 600; background: var(--midnight); color: var(--ivory);
