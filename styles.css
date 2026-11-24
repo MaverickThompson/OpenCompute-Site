@@ -409,6 +409,11 @@ figure { margin: 0; }
 .campus-start:hover { transform: translateX(-50%) translateY(-1px); }
 .campus-zoom-hint { position: absolute; z-index: 4; left: 50%; top: 50%; transform: translate(-50%, -50%); margin: 0; padding: 10px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; pointer-events: none; background: rgb(24 40 63 / 0.82); color: var(--ivory); }
 .campus-toast { position: absolute; z-index: 4; left: 50%; bottom: 56px; transform: translateX(-50%); margin: 0; padding: 10px 16px; border-radius: 12px; font-size: 13px; background: var(--midnight); color: var(--ivory); max-width: calc(100% - 32px); }
+/* Phones only: the info box folds into a small "Map info" button once you touch the map. */
+.campus-info-toggle {
+  display: none; justify-self: end; font: 600 12px var(--body); color: var(--midnight); cursor: pointer;
+  background: rgb(var(--white-rgb) / .55); border: 1px solid rgb(var(--midnight-rgb) / .2); border-radius: 999px; padding: 5px 12px;
+}
 .campus-credit { position: absolute; z-index: 2; right: 16px; bottom: 16px; margin: 0; font-size: 10px; padding: 3px 8px; border-radius: 6px; background: rgb(var(--ivory-rgb) / .75); color: rgb(var(--midnight-rgb) / .75); }
 @media (max-width: 760px) {
   .campus-stage { height: 520px; border-radius: 24px; }
@@ -419,4 +424,8 @@ figure { margin: 0; }
   .campus-panel { top: auto; bottom: 16px; left: 16px; right: 16px; width: auto; }
   .campus-credit { bottom: auto; top: 8px; right: 12px; left: 12px; text-align: center; }
   .campus-stage:not(.live) .campus-side { display: none; }
+  .campus-info-toggle { display: inline-block; }
+  .campus-stage.info-closed .campus-side { right: auto; padding: 6px; border-radius: 999px; }
+  .campus-stage.info-closed .campus-side > :not(.campus-info-toggle) { display: none; }
+  .campus-stage.info-closed .campus-info-toggle { border-color: transparent; background: transparent; }
 }
