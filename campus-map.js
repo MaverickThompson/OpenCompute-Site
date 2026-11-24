@@ -770,6 +770,18 @@ export async function startShowcase(section) {
     li.append(b);
     list.append(li);
   }
+  // Phones: the info box covers the top of the map, so it folds into a "Map info" button the
+  // first time you touch the map, and the button opens and closes it again.
+  const infoToggle = section.querySelector("[data-campus-info-toggle]");
+  const phone = window.matchMedia("(max-width: 760px)");
+  function setInfoOpen(open) {
+    stage.classList.toggle("info-closed", !open);
+    infoToggle.setAttribute("aria-expanded", String(open));
+    infoToggle.textContent = open ? "Hide info" : "Map info";
+  }
+  infoToggle.addEventListener("click", () => setInfoOpen(stage.classList.contains("info-closed")));
+  host.addEventListener("pointerdown", () => { if (phone.matches) setInfoOpen(false); });
+  phone.addEventListener?.("change", (e) => { if (!e.matches) setInfoOpen(true); });
   stage.classList.add("live");
   section.addEventListener("keydown", (e) => { if (e.key === "Escape") select(null, false); });
   return scene;
